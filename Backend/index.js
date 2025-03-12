@@ -1,10 +1,10 @@
 const dotenv = require('dotenv').config({ path: '../.env' });
 const mongoose = require('mongoose');
-// const cors = require('cors');
-// const express = require('express');
+const cors = require('cors');
+const express = require('express');
 
 const uri = process.env.MONGODB_URI;
-// console.log(uri);
+// onsole.log(uri);
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 async function run() {
@@ -19,7 +19,8 @@ async function run() {
 
 run().catch(console.dir);
 
-const app = require('express')();
+const app = express();
+app.use(cors());
 const port = process.env.PORT || 5000;
 
 const taskSchema = new mongoose.Schema({
@@ -38,6 +39,7 @@ app.get('/', (req, res) => {
 // Return all tasks within the mongoose database
 app.get('/tasks', async(req, res) => {  
     const tasks = await task.find();
+    console.log(tasks);
     res.json(tasks);
 });
 
@@ -57,8 +59,6 @@ app.delete('/tasks/:id', async (req, res) => {
     const deleteTask = await task.findByIdAndDelete(req.params.id);
     res.json({ message: 'Task deleted' });
 });
-
-
 
 app.listen(port, () => {
     console.log(`server running on port: ${port}`)
